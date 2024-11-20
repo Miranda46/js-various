@@ -1,7 +1,12 @@
-function linkedList () {
+const linkedList = () => {
     let size = 0;
     let head = null;
     let tail = null;
+
+    const setHead = (newHead) => head = newHead;
+    const setTail = (newTail) => tail = newTail;
+    const getHead = () => head;
+    const getTail = () => tail;
     
     const Node = function(_value){
         let value = _value ? _value : null;
@@ -10,20 +15,20 @@ function linkedList () {
     }
 
     const sizer = () => size++;
+    const getSize = () => size;
 
     const append = (value) => {
         let node = Node(value);
-        if (tail === null){
-            tail = node;
+        if (getTail() === null){
+            setTail(node);
         } else {
-            tail.nextNode = node;
-            tail = node;
+            getTail().nextNode = node;
+            setTail(node);
         }
-        if ( head === null ){
-            head = node;
+        if ( getHead() === null ){
+            setHead(node);
         }
-        size++;
-        console.log(head, tail)
+        sizer();
     }
 
     const prepend = function(value){
@@ -41,76 +46,121 @@ function linkedList () {
     }
 
     const at = function(index){
-        if ( index >= n ){
+        if ( index >= getSize() || index < 0 ){
             return null;
         }
-        for (let i = 0; i < index + 1; i++) {
-            let node = head.next;
-            if (i === index) {
+        let counter = 0
+        let node = getHead();
+        while ( true ) {
+            if (counter === index) {
                 return node;
             }
+            if (node.nextNode) node = node.nextNode;
+            else return;
+            counter++;
         }
     }
 
     const pop = function(){
-        if (!tail){
+        if (!getTail()){
             return; 
-        }
-        size--;
-        if (size === 1){
-            head = null;
-            tail = null;
+        };
+        if (getSize() === 1){
+            setHead(null);
+            setTail(null);
+            size--
             return;
         }
-
-        let node = at( size - 2 );
-        tail = node;
-        node.nextNode = null;        
+        
+        let node = at( getSize() - 2 );
+        setTail(node);
+        node.nextNode = null;     
+        size--;
     }
 
     const contains = function (value){
         if (!head) return false;
         let node = head;
-        for ( let i = 0; i < size - 1 ; i++ ){
+        while ( true ) {
             if (node.value === value){
                 return true;
+            } else if (node.nextNode === null) {
+                return false;
             }
-            let node = node.nextNode;
+            node = node.nextNode;
         }
-        return false;
     }
 
     const find = function(value){
         if (!head) return null;
+        let counter = 0;
         let node = head;
-        for ( let i = 0; i < size - 1 ; i++ ){
-            if (head.value === node.value){
-                return i;
+        while ( true ) {
+            if (node.value === value){
+                return counter;
+            } else if (node.nextNode === null) {
+                return null;
             }
-            let node = node.nextNode;
+            node = node.nextNode;
+            counter++;
         }
-        return null;
     }
 
     const toString = function() {
-        if (!head) return null;
+        if (!getHead()) {
+            console.log('null');
+            return
+        };
         let string = '';
-        let node = head;
+        let node = getHead();
         while ( true ) { 
-            if (!node.nextNode){
+            if (node === null){
                 string += 'null';
                 console.log(string);
                 return;
             }
-            string += `${ node.value } -> `;
+            string += `( ${ node.value } ) -> `;
             node = node.nextNode;
         }
     }
-    return { sizer, size, head, tail, append, prepend, at, pop, contains, find, toString };
+    return { getSize, sizer, getHead, getTail, append, prepend, at, pop, contains, find, toString };
 }
+
+
 
 const ll = linkedList();
 ll.append('primero');
-ll.sizer()
-console.log(ll);
+ll.prepend('antes');
+console.log('head', ll.getHead());
+console.log('tail', ll.getTail());
+console.log('at', ll.at(0));
+
 ll.toString();
+console.log('pop');
+ll.pop()
+console.log(ll.getSize())
+ll.toString();
+console.log('pop');
+ll.pop()
+ll.toString();
+ll.append('ultimo');
+ll.prepend('inicial');
+console.log('append ultimo, prepend inicial')
+ll.toString();
+console.log('find inicial:', ll.find('inicial'));
+console.log('find noexiste:', ll.find('noexiste'))
+console.log('contains inicial:', ll.contains('inicial'));
+console.log('contains noexiste:', ll.contains('noexiste'))
+console.log(ll.getSize());
+
+
+const list = linkedList();
+
+list.append("dog");
+list.append("cat");
+list.append("parrot");
+list.append("hamster");
+list.append("snake");
+list.append("turtle");
+
+list.toString();
